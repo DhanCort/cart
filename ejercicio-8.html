@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>POLYMER STORE</title>
+</head>
+<body>
+
+<base href="https://cdn.rawgit.com/download/polymer-cdn/2.6.0/lib/">
+<script src="webcomponentsjs/webcomponents-loader.js"></script>
+<link rel="import" href="iron-ajax/iron-ajax.html">
+<link rel="import" href="polymer/polymer-element.html">
+
+
+<!--COMPONENTE DE LA TIENDA-->
+<store-component></store-component>
+<dom-module id="store-component">
+	<template>
+		<style>
+			#store{
+				border: 1px solid yellow;
+				width: 40%;
+				display: flex;
+				flex-direction: column;
+			}
+
+			#componentes{
+				display: flex;
+				
+			}
+			
+		</style>
+
+
+
+		<div id="store">
+			<div id="titulo">
+				<h1> Polymer Store</h1>
+			</div>
+
+			<div id="carrito">
+				<h2>Cart</h2>
+
+				<table>
+					<tr>
+						<td>Products</td>
+						<td>Price</td>
+						<td>Units</td>
+						<td>Total</td>
+					</tr>
+					<template is="dom-if" if="{{hidePineapple}}">
+					<tr>
+						<td>Pineapple</td>
+						<td>10.5</td>
+						<td>[[unidadPineapple]]</td>
+						<td>[[totalPineapple]]</td>
+					</tr>
+					</template>
+					<template is="dom-if" if="{{hideOrange}}">
+					<tr>
+						<td>Orange</td>
+						<td>20.5</td>
+						<td>[[unidadOrange]]</td>
+						<td>[[totalOrange]]</td>
+					</tr>
+					</template>
+					<template is="dom-if" if="{{hideRaspberry}}">
+					<tr>
+						<td>Raspberry</td>
+						<td>21.5</td>
+						<td>[[unidadRaspberry]]</td>
+						<td>[[totalRaspberry]]</td>
+					</tr>
+					</template>
+					<tr>
+						<td>-Total</td>
+						<td></td>
+						<td>[[totalUnidades]]</td>
+						<td>[[totalVenta]]</td>
+					</tr>
+				</table>				
+			</div>
+
+			<div id="titulo-productos">
+				<h2>Products</h2>
+			</div>
+
+			<div id="componentes">
+				<pineapples-component cantidad-pineapple="{{unidadPineapple}}">
+				</pineapples-component>
+				<orange-component cantidad-orange="{{unidadOrange}}"></orange-component>
+				<raspberry-component cantidad-raspberry="{{unidadRaspberry}}"></raspberry-component>	
+			</div>
+
+		</div>
+	</template>
+
+	<script>
+		class StoreComponent extends Polymer.Element {
+	    static get is() { return "store-component"; }
+	    static get properties() {
+	      return {
+	      	//PROPIEDADES PARA CALCULAR PIÑAS
+	      	unidadPineapple:{
+	      		type: Number,
+	      		value: 0,
+	      		observer: "_changeUnitPineapple"
+	      	},
+	      	totalPineapple:{
+	      		type: Number,
+	      	},
+	      	hidePineapple:{
+	      		type: Boolean,
+	      		value: true
+	      	},
+	        totalVenta:{
+	        	type:Number,
+	        	value: 0
+	        },
+	        totalUnidades:{
+	        	type: Number,
+	        },
+
+	        //PROPIEDADES PARA CALCULAR NARANJAS
+	        unidadOrange:{
+	      		type: Number,
+	      		value: 0,
+	      		observer: "_changeUnitOrange"
+	      	},
+	      	totalOrange:{
+	      		type: Number,
+	      	},
+	      	hideOrange:{
+	      		type: Boolean,
+	      		value: true
+	      	},
+
+	      	//PROPIEDADES PARA CALCULAR NARANJAS
+	        unidadRaspberry:{
+	      		type: Number,
+	      		value: 0,
+	      		observer: "_changeUnitRaspberry"
+	      	},
+	      	totalRaspberry:{
+	      		type: Number,
+	      	},
+	      	hideRaspberry:{
+	      		type: Boolean,
+	      		value: true
+	      	},
+	      };      
+	    }
+
+	    //CODIGO PARA MOSTRAR PINEAPPLES
+	    _changeUnitPineapple(){
+	    	var cantidadPineapple = this.unidadPineapple;
+	    	this.totalPineapple = cantidadPineapple*10.5
+
+	    	if(cantidadPineapple <= 0){
+	    		this.hidePineapple = false;
+	    		this.unidadPineapple = 0;
+	    	}else{
+	    		this.hidePineapple = true;
+	    	}
+
+	    	if(cantidadPineapple >=0){
+	    		this.totalVenta = this.totalPineapple + this.totalOrange + this.totalRaspberry
+	    		this.totalUnidades = this.unidadPineapple + this.unidadOrange + this.unidadRaspberry
+	    	}
+
+
+	    	
+	    }
+
+	    //CODIGO PARA MOSTRAR ORANGE
+
+	    _changeUnitOrange(){
+	    	var cantidadOrange = this.unidadOrange;
+	    	this.totalOrange = cantidadOrange*20.5
+
+	    	if(cantidadOrange <= 0){
+	    		this.hideOrange = false;
+	    		this.unidadOrange = 0;
+	    	}else{
+	    		this.hideOrange = true;
+	    	}
+
+	    	if(cantidadOrange >=0){
+	    		this.totalVenta = this.totalPineapple + this.totalOrange + this.totalRaspberry
+	    		this.totalUnidades = this.unidadPineapple + this.unidadOrange + this.unidadRaspberry
+	    	}
+	    	
+	    }
+
+	    //CODIGO PARA MOSTRAR RASPBERRY
+
+	    _changeUnitRaspberry(){
+	    	var cantidadRaspberry = this.unidadRaspberry;
+	    	this.totalRaspberry = cantidadRaspberry*21.5
+
+	    	if(cantidadRaspberry <= 0){
+	    		this.hideRaspberry = false;
+	    		this.unidadRaspberry = 0;
+	    	}else{
+	    		this.hideRaspberry = true;
+	    	}
+
+	    	if(cantidadRaspberry >=0){
+	    		this.totalVenta = this.totalPineapple + this.totalOrange + this.totalRaspberry
+	    		this.totalUnidades = this.unidadPineapple + this.unidadOrange + this.unidadRaspberry
+	    	}
+
+	    }
+
+
+	    	    
+	    
+	  }
+	  customElements.define(StoreComponent.is, StoreComponent);
+		
+	</script>
+
+
+
+<!--COMPONENTE pineapples-->
+
+<dom-module id="pineapples-component">
+	<template>
+		<style>
+			#fruta{
+				border: 1px solid black;
+				display: flex;
+				flex-direction: column;
+				width: 150px;
+				height: 200px;
+				margin-left: 15px;
+			}
+
+			#titulo{
+				width: 100%;
+				height: 20%;
+				text-align: center;
+			}
+
+			#imagen{
+				height: 40%;
+			}
+
+			#imagen img{
+				height: 100%;
+			}
+
+			#datos-fruta{
+				height: 30%;
+				display: flex;
+				flex-direction: column;
+			}
+
+			#informacion{
+				display: flex;
+				flex-direction: column;
+			}
+
+			#cantidad{
+				display: flex;
+			}
+
+			#cantidad input[type="text"]{
+				margin-left: 4px;
+				border: none;
+			}
+
+			label{
+				margin.top: 5px;
+			}
+
+			button{
+				margin-top: 5px;
+				margin-right: 3px;
+			}
+			
+		</style>
+
+		<slot></slot>
+
+		<div id="fruta">
+			<div id="titulo">
+				<h3>Pineapples</h3>
+			</div>
+			<div id="imagen">
+				<img src="">
+			</div>
+			<div id="datos-fruta">
+				<div id="informacion">
+					<div id="precio">
+						<label>Price: 10.5</label><br>
+					</div>
+					<div id="cantidad">
+						<label>Units:</label><input type="text" name="cantidad" value="[[cantidadPineapple]]" style="width : 30px" >
+					</div>					
+					
+				</div>
+				<div id="botones">
+					<button on-click="add">+</button>
+					<button on-click="rest">-</button>					
+				</div>
+			</div>
+		</div>
+		
+		
+		
+
+	</template>
+
+	<script>
+		class PineapplesComponent extends Polymer.Element {
+	    static get is() { return "pineapples-component"; }
+	    static get properties() {
+	      return {
+	        cantidadPineapple: {
+	          type: Number,
+	          value:0,
+	          notify: true,          
+	        },	        
+	      };      
+	    }
+
+	    add(){
+	    	this.cantidadPineapple++;
+	    	//console.log("Pinas:"+this.cantidadPineapple);
+	    }
+
+	    rest(){
+	    	this.cantidadPineapple--;
+	    	//console.log("Pinas:"+this.cantidadPineapple);
+	    }
+
+	    	    
+	    
+	  }
+	  customElements.define(PineapplesComponent.is, PineapplesComponent);
+		
+	</script>
+</dom-module>
+
+
+
+
+<!--COMPONENTE orange-->
+
+<dom-module id="orange-component">
+	<template>
+		<style>
+			#fruta{
+				border: 1px solid black;
+				display: flex;
+				flex-direction: column;
+				width: 150px;
+				height: 200px;
+				margin-left: 15px;
+			}
+
+			#titulo{
+				width: 100%;
+				height: 20%;
+				text-align: center;
+			}
+
+			#imagen{
+				height: 40%;
+			}
+
+			#imagen img{
+				height: 100%;
+			}
+
+			#datos-fruta{
+				height: 30%;
+				display: flex;
+				flex-direction: column;
+			}
+
+			#informacion{
+				display: flex;
+				flex-direction: column;
+			}
+
+			#cantidad{
+				display: flex;
+			}
+
+			#cantidad input[type="text"]{
+				margin-left: 4px;
+				border: none;
+			}
+
+			label{
+				margin.top: 5px;
+			}
+
+			button{
+				margin-top: 5px;
+				margin-right: 3px;
+			}
+			
+		</style>
+
+		<div id="fruta">
+			<div id="titulo">
+				<h3>Orange</h3>
+			</div>
+			<div id="imagen">
+				<img src="">
+			</div>
+			<div id="datos-fruta">
+				<div id="informacion">
+					<div id="precio">
+						<label>Price: 20.5</label><br>
+					</div>
+					<div id="cantidad">
+						<label>Units:</label><input type="text" name="cantidad" value="[[cantidadOrange]]" style="width : 30px" >
+					</div>					
+					
+				</div>
+				<div id="botones">
+					<button on-click="add">+</button>
+					<button on-click="rest">-</button>					
+				</div>
+			</div>
+		</div>
+		
+		
+		
+
+	</template>
+
+	<script>
+		class OrangeComponente extends Polymer.Element {
+	    static get is() { return "orange-component"; }
+	    static get properties() {
+	      return {
+	      	cantidadOrange: {
+	          type: Number,
+	          value:0,
+	          notify: true,          
+	        },
+	        	        
+	      };      
+	    }
+
+	    //METODO PARA NARANJAS
+
+	    add(){
+	    	this.cantidadOrange++;
+	    	//console.log("Naranjas:"+this.cantidadOrange);
+	    }
+
+	    rest(){
+	    	this.cantidadOrange--;
+	    	//console.log("Naranjas:"+this.cantidadOrange);
+	    }	            
+	    
+	  }
+	  customElements.define(OrangeComponente.is, OrangeComponente);
+		
+	</script>
+</dom-module>
+
+
+
+
+<!--COMPONENTE raspberry-->
+
+<dom-module id="raspberry-component">
+	<template>
+		<style>
+			#fruta{
+				border: 1px solid black;
+				display: flex;
+				flex-direction: column;
+				width: 150px;
+				height: 200px;
+				margin-left: 15px;
+			}
+
+			#titulo{
+				width: 100%;
+				height: 20%;
+				text-align: center;
+			}
+
+			#imagen{
+				height: 40%;
+			}
+
+			#imagen img{
+				height: 100%;
+			}
+
+			#datos-fruta{
+				height: 30%;
+				display: flex;
+				flex-direction: column;
+			}
+
+			#informacion{
+				display: flex;
+				flex-direction: column;
+			}
+
+			#cantidad{
+				display: flex;
+			}
+
+			#cantidad input[type="text"]{
+				margin-left: 4px;
+				border: none;
+			}
+
+			label{
+				margin.top: 5px;
+			}
+
+			button{
+				margin-top: 5px;
+				margin-right: 3px;
+			}
+			
+		</style>
+
+		<div id="fruta">
+			<div id="titulo">
+				<h3>Raspberry</h3>
+			</div>
+			<div id="imagen">
+				<img src="">
+			</div>
+			<div id="datos-fruta">
+				<div id="informacion">
+					<div id="precio">
+						<label>Price: 21.5</label><br>
+					</div>
+					<div id="cantidad">
+						<label>Units:</label><input type="text" name="cantidad" value="[[cantidadRaspberry]]" style="width : 30px" >
+					</div>					
+					
+				</div>
+				<div id="botones">
+					<button on-click="add">+</button>
+					<button on-click="rest">-</button>					
+				</div>
+			</div>
+		</div>
+		
+		
+		
+
+	</template>
+
+	<script>
+		class RaspberryComponent extends Polymer.Element {
+	    static get is() { return "raspberry-component"; }
+	    static get properties() {
+	      return {
+	      	cantidadRaspberry: {
+	          type: Number,
+	          value:0,
+	          notify: true,          
+	        },	        
+	      };      
+	    }
+
+	    //METODO PARA FRAMBUESAS
+
+	    add(){
+	    	this.cantidadRaspberry++;
+	    	//console.log("Frambuesas:"+this.cantidadRaspberry);
+	    }
+
+	    rest(){
+	    	this.cantidadRaspberry--;
+	    	//console.log("Frambuesas:"+this.cantidadRaspberry);
+	    }		    
+	  }
+	  customElements.define(RaspberryComponent.is, RaspberryComponent);
+		
+	</script>
+</dom-module>
+
+</body>
+</html>
